@@ -76,10 +76,6 @@ pub fn verify(signature: &[u8], message: &[u8], pubkey: &[u8]) -> bool {
 /// * seed: UIntArray with 32 element
 ///
 /// returned vector is the private key consisting of 64 bytes.
-
-pub fn secret_from_seed(seed: &[u8]) -> Vec<u8> {
-	__secret_from_seed(seed).to_vec()
-}
 #[repr(C)]
 pub struct c_secret{
 	status:u32,
@@ -108,12 +104,6 @@ pub unsafe extern "C" fn schnr_secret_from_seed(seed:*const c_uchar) -> (Box<c_s
 ///
 /// returned vector is the concatenation of first the private key (64 bytes)
 /// followed by the public key (32) bytes.
-/*#[no_mangle]
-pub extern "C" fn api_keypair_from_seed(seed: &[u8]) -> Vec<u8> {
-	__keypair_from_seed(seed).to_vec()
-}*/
-
-
 #[repr(C)]
 pub struct c_keypair{
 	status:u32,

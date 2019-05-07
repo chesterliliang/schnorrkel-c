@@ -33,13 +33,14 @@ void test_keypair_from_seed()
     unsigned char seed[SEED_LEN] = {0};
     unsigned int rv = STATUS_NOK;
     int i = 0;
-    keypair *kp = malloc(sizeof(secret));
+    sr_keypair pair;
 
     gen_seed(seed);
     printf("-----test keypair_from_seed---------\n");
-    rv = keypair_from_seed(seed,&kp);
+    rv = keypair_from_seed(seed,&pair);
     assert(rv==STATUS_OK);
-    print_array( kp->data,PUB_KEY_LEN + PRI_KEY_LEN);
+    print_array( pair.pri,PRI_KEY_LEN);
+    print_array( pair.pub,PUB_KEY_LEN );
 }
 
 void test_secret_from_seed()
@@ -47,13 +48,13 @@ void test_secret_from_seed()
     unsigned char seed[SEED_LEN] = {0};
     unsigned int rv = STATUS_NOK;
     int i = 0;
-    secret *s = malloc(sizeof(secret));
+    unsigned char s[PRI_KEY_LEN] = { 0 };
 
     gen_seed(seed);
     printf("-----test secret_from_seed---------\n");
-    rv = secret_from_seed(seed,&s);
+    rv = secret_from_seed(seed,s);
     assert(rv==STATUS_OK);
-    print_array( s->data, PRI_KEY_LEN);
+    print_array( s, PRI_KEY_LEN);
 }
 
 int main()
