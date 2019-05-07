@@ -1,0 +1,20 @@
+[package]
+name = "schnorrkel-c"
+version = "0.1.0"
+authors = ["chester"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+
+
+[dependencies]
+schnorrkel = { version = "0.1", features = ["nightly"]}
+libc = "0.2.0"
+bytes = "0.4.12"
+
+[dev-dependencies]
+hex-literal = "0.1.4"
+rand = { version = "0.4" }
+
