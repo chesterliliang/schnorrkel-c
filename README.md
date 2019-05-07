@@ -29,7 +29,11 @@ cargo build
 in project root dir, use gcc:
 
 ```
+on Linux
 gcc -g -o test ./src/lib.c ./src/test.c ./target/debug/libschnorrkel_c.so -L. -Wl,-rpath=.^C
+
+on OSX
+gcc -g -o test ./src/lib.c ./src/test.c ./target/debug/libschnorrkel_c.dylib -L. 
 ```
 ### Run test
 ```
