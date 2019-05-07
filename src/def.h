@@ -13,3 +13,7 @@ typedef struct _sr_data
 extern sr_data* schnr_keypair_from_seed(unsigned char* seed);
 
 extern sr_data* schnr_secret_from_seed(unsigned char* seed);
+
+extern sr_data* schnr_sign(unsigned char* puk,unsigned char* pri,unsigned char* msg, unsigned int msg_len);
+
+extern unsigned int schnr_verify(unsigned char* sign, unsigned char* puk, unsigned char* msg, unsigned int msg_len);

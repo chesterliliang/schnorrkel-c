@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
+sr_keypair pair;
+unsigned char s[SIGN_LEN] = { 0 };
+unsigned char msg[32] = {0};
+
 //we won't provice any rand or srand ref impl
 //make sure your seed is generated safely
 //!!! be cafeful !!!!
@@ -32,8 +36,6 @@ void test_keypair_from_seed()
 {
     unsigned char seed[SEED_LEN] = {0};
     unsigned int rv = STATUS_NOK;
-    int i = 0;
-    sr_keypair pair;
 
     gen_seed(seed);
     printf("-----test keypair_from_seed---------\n");
@@ -47,7 +49,6 @@ void test_secret_from_seed()
 {
     unsigned char seed[SEED_LEN] = {0};
     unsigned int rv = STATUS_NOK;
-    int i = 0;
     unsigned char s[PRI_KEY_LEN] = { 0 };
 
     gen_seed(seed);
@@ -57,10 +58,45 @@ void test_secret_from_seed()
     print_array( s, PRI_KEY_LEN);
 }
 
+void test_sign()
+{
+
+    unsigned int rv = STATUS_NOK;
+    
+    gen_seed(msg);
+    printf("-----test sign---------\n");
+    rv = sign(pair.pub,pair.pri,msg,32,s);
+    assert(rv==STATUS_OK);
+    print_array( s, SIGN_LEN);
+}
+
+void test_verify()
+{
+    unsigned int rv = STATUS_NOK;
+    printf("-----test verify normal---------\n");
+    print_array( s, SIGN_LEN);
+    rv = verify(s,pair.pub,msg,32);
+    printf("-----rv=%d-------\n",rv);
+    if(rv)
+        printf("-----verify success--------\n");
+    else
+        printf("-----verify fail--------\n");
+
+    printf("-----test verify modify---------\n");
+    msg[0] = 0xff;
+    rv = verify(s,pair.pub,msg,32);
+    if(rv)
+        printf("-----verify success--------\n");
+    else
+        printf("-----verify fail--------\n");
+}
+
 int main()
 {
     test_keypair_from_seed();
     test_secret_from_seed();
+    test_sign();
+    test_verify();
 
     return 0;
 }

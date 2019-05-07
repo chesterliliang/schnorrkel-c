@@ -11,7 +11,7 @@ unsigned int keypair_from_seed(unsigned char* seed, sr_keypair* kp)
     unsigned int rv = STATUS_NOK;
     sr_data *pair = malloc(sizeof(sr_data));
     sr_data** p = &pair;
-    memset((*p)->data, 0x00, PUB_KEY_LEN + PRI_KEY_LEN);
+    memset((*p)->data, 0x00, DATA_BUF_LEN);
     (*p)->len = 0;
     (*p)->status = STATUS_NOK;
 
@@ -34,7 +34,7 @@ unsigned int secret_from_seed(unsigned char* seed, unsigned char *s)
     sr_data *scr = malloc(sizeof(sr_data));
     sr_data** p = &scr;
 
-    memset((*p)->data, 0x00, PUB_KEY_LEN + PRI_KEY_LEN);
+    memset((*p)->data, 0x00, DATA_BUF_LEN);
     (*p)->len = 0;
     (*p)->status = STATUS_NOK;
 
@@ -48,4 +48,35 @@ unsigned int secret_from_seed(unsigned char* seed, unsigned char *s)
     free(scr);
 
     return STATUS_OK;
+}
+
+unsigned int sign(unsigned char* puk,unsigned char* pri,unsigned char* msg, unsigned int msg_len, unsigned char* sign)
+{
+    unsigned int rv = STATUS_NOK;
+    sr_data *scr = malloc(sizeof(sr_data));
+    sr_data** p = &scr;
+
+    memset((*p)->data, 0x00, DATA_BUF_LEN);
+    (*p)->len = 0;
+    (*p)->status = STATUS_NOK;
+
+    *p = schnr_sign(puk,pri,msg,msg_len);
+    if ((*p)->status == STATUS_NOK)
+    {
+        return STATUS_NOK;
+    }
+
+    memcpy(sign,(*p)->data,SIGN_LEN);
+    free(scr);
+
+    return STATUS_OK;
+}
+
+unsigned int verify(unsigned char* sign, unsigned char* puk, unsigned char* msg, unsigned int msg_len)
+{
+    unsigned int rv = STATUS_NOK;
+
+    rv = schnr_verify(sign,puk,msg,msg_len);
+
+    return rv;
 }
