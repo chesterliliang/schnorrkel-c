@@ -1,4 +1,8 @@
-#include "def.h"
+#define SEED_LEN 32
+#define PUB_KEY_LEN 32
+#define PRI_KEY_LEN 64
+#define STATUS_OK 0
+#define STATUS_NOK 1
 
 typedef struct _sr_keypair
 {

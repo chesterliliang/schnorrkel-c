@@ -1,4 +1,5 @@
 #include "lib.h"
+#include "def.h"
 #include "string.h"
 #include "stdio.h"
 #include <stdlib.h>
@@ -8,8 +9,8 @@
 unsigned int keypair_from_seed(unsigned char* seed, sr_keypair* kp)
 {
     unsigned int rv = STATUS_NOK;
-    keypair *pair = malloc(sizeof(secret));
-    keypair** p = &pair;
+    sr_data *pair = malloc(sizeof(sr_data));
+    sr_data** p = &pair;
     memset((*p)->data, 0x00, PUB_KEY_LEN + PRI_KEY_LEN);
     (*p)->len = 0;
     (*p)->status = STATUS_NOK;
@@ -30,8 +31,8 @@ unsigned int keypair_from_seed(unsigned char* seed, sr_keypair* kp)
 unsigned int secret_from_seed(unsigned char* seed, unsigned char *s)
 {
     unsigned int rv = STATUS_NOK;
-    secret *scr = malloc(sizeof(secret));
-    secret** p = &scr;
+    sr_data *scr = malloc(sizeof(sr_data));
+    sr_data** p = &scr;
 
     memset((*p)->data, 0x00, PUB_KEY_LEN + PRI_KEY_LEN);
     (*p)->len = 0;
@@ -42,7 +43,7 @@ unsigned int secret_from_seed(unsigned char* seed, unsigned char *s)
     {
         return STATUS_NOK;
     }
-    
+
     memcpy(s,(*p)->data,PRI_KEY_LEN);
     free(scr);
 

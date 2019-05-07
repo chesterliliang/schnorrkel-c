@@ -13,6 +13,14 @@ const PUB_KEY_LEN:u32 = 32;
 const PRI_KEY_LEN:u32 = 64;
 const STATUS_OK:u32 = 0;
 const STATUS_NOK:u32 = 1;
+
+#[repr(C)]
+pub struct sr_data{
+	status:u32,
+    data:[u8;96],
+    len: u32
+}
+
 /// Perform a derivation on a secret
 ///
 /// * secret: UIntArray with 64 bytes
@@ -76,27 +84,22 @@ pub fn verify(signature: &[u8], message: &[u8], pubkey: &[u8]) -> bool {
 /// * seed: UIntArray with 32 element
 ///
 /// returned vector is the private key consisting of 64 bytes.
-#[repr(C)]
-pub struct c_secret{
-	status:u32,
-    data:[u8;64],
-    len: u32
-}
+
 #[no_mangle]
-pub unsafe extern "C" fn schnr_secret_from_seed(seed:*const c_uchar) -> (Box<c_secret>) {
+pub unsafe extern "C" fn schnr_secret_from_seed(seed:*const c_uchar) -> (Box<sr_data>) {
 	assert!(!seed.is_null(), "Null pointer in sum()");
 	let rseed: &[c_uchar] = slice::from_raw_parts(seed, 32);
 	let len : u32 = PUB_KEY_LEN+PRI_KEY_LEN;
 	let data_bytes = Bytes::from(__secret_from_seed(rseed).to_vec());
-	let mut data:[u8;64] = [0;64];
+	let mut data:[u8;96] = [0;96];
 	let status:u32 = STATUS_OK;
 	let mut i =0;
 	while i<64 {
 		data[i] = data_bytes[i];
 		i = i+1;
 	}
-	let secret = c_secret { data: data,len:len, status:status};
-	Box::new(secret)
+	let sr_data = sr_data { data: data,len:len, status:status};
+	Box::new(sr_data)
 }
 /// Generate a key pair. .
 ///
@@ -104,15 +107,9 @@ pub unsafe extern "C" fn schnr_secret_from_seed(seed:*const c_uchar) -> (Box<c_s
 ///
 /// returned vector is the concatenation of first the private key (64 bytes)
 /// followed by the public key (32) bytes.
-#[repr(C)]
-pub struct c_keypair{
-	status:u32,
-    data:[u8;96],
-    len: u32
-}
 
 #[no_mangle]
-pub unsafe extern "C" fn schnr_keypair_from_seed(seed:*const c_uchar) -> (Box<c_keypair>) {
+pub unsafe extern "C" fn schnr_keypair_from_seed(seed:*const c_uchar) -> (Box<sr_data>) {
 	assert!(!seed.is_null(), "Null pointer in sum()");
 	let rseed: &[c_uchar] = slice::from_raw_parts(seed, 32);
 	let len : u32 = PUB_KEY_LEN+PRI_KEY_LEN;
@@ -124,7 +121,7 @@ pub unsafe extern "C" fn schnr_keypair_from_seed(seed:*const c_uchar) -> (Box<c_
 		data[i] = data_bytes[i];
 		i = i+1;
 	}
-	let pair = c_keypair { data, len, status};
-	Box::new(pair) 
+	let sr_data = sr_data { data, len, status};
+	Box::new(sr_data) 
 }
 
