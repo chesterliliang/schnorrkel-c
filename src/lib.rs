@@ -96,9 +96,6 @@ pub unsafe extern "C" fn schnr_sign(puk:*const c_uchar,pri:*const c_uchar,msg:*c
 /// * message: Arbitrary length UIntArray
 /// * pubkey: UIntArray with 32 element
 
-pub fn verify(signature: &[u8], message: &[u8], pubkey: &[u8]) -> bool {
-	__verify(signature, message, pubkey)
-}
 #[no_mangle]
 pub unsafe extern "C" fn schnr_verify(sign:*const c_uchar,puk:*const c_uchar,msg:*const c_uchar,msg_len:usize) -> u32 {
 
